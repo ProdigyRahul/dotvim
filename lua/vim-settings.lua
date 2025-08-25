@@ -96,6 +96,30 @@ vim.keymap.set("v", "<leader>d", '"_d', { desc = "Delete without yanking" })
 -- Quick save
 vim.keymap.set("n", "<leader>w", "<cmd>w<CR>", { desc = "Save file" })
 
+-- File deletion shortcuts (safe with confirmation)
+vim.keymap.set("n", "<leader>df", function()
+  local file = vim.fn.expand("%:p")
+  if file == "" then
+    vim.notify("No file to delete", vim.log.levels.WARN)
+    return
+  end
+  
+  local choice = vim.fn.confirm("Delete " .. vim.fn.expand("%:t") .. "?", "&Yes\n&No", 2)
+  if choice == 1 then
+    -- Try to use trash if available
+    local delete_cmd = "rm"
+    if vim.fn.executable("trash") == 1 then
+      delete_cmd = "trash"
+    elseif vim.fn.executable("gio") == 1 then
+      delete_cmd = "gio trash"
+    end
+    
+    vim.cmd("!" .. delete_cmd .. " " .. vim.fn.shellescape(file))
+    vim.cmd("bdelete!")
+    vim.notify("Deleted: " .. vim.fn.expand("%:t"), vim.log.levels.INFO)
+  end
+end, { desc = "Delete current file" })
+
 -- File type specific settings
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
