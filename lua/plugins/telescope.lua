@@ -14,6 +14,7 @@ return {
       telescope.setup({
         defaults = {
           -- Default configuration for telescope
+          file_ignore_patterns = { ".git/" },
           mappings = {
             i = {
               ["<C-h>"] = "which_key"
@@ -21,7 +22,10 @@ return {
           }
         },
         pickers = {
-          -- Default configuration for builtin pickers
+          find_files = {
+            hidden = true,
+            find_command = { "rg", "--files", "--hidden", "--glob", "!.git/*" }
+          }
         },
         extensions = {
           ["ui-select"] = {

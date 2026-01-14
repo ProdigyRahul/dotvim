@@ -17,8 +17,8 @@ return {
     "williamboman/mason-lspconfig.nvim",
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = { 
-          "lua_ls", 
+        ensure_installed = {
+          "lua_ls",
           "eslint",
           "tailwindcss",
           "emmet_ls",
@@ -32,83 +32,25 @@ return {
   {
     "neovim/nvim-lspconfig",
     config = function()
-      local lspconfig = require("lspconfig")
       local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
       -- TypeScript is now handled by typescript-tools.nvim for better performance
       -- See lua/plugins/typescript-tools.lua for TypeScript configuration
 
-      lspconfig.eslint.setup({
+      -- Global config for all LSP servers (capabilities from nvim-cmp)
+      vim.lsp.config('*', {
         capabilities = capabilities,
-        settings = {
-          workingDirectory = { mode = "location" },
-          codeAction = {
-            disableRuleComment = {
-              enable = true,
-              location = "separateLine"
-            },
-            showDocumentation = {
-              enable = true
-            }
-          },
-          codeActionOnSave = {
-            enable = false,
-            mode = "all"
-          },
-          format = true,
-          nodePath = "",
-          onIgnoredFiles = "off",
-          packageManager = "pnpm",
-          problems = {
-            shortenToSingleLine = false
-          },
-          quiet = false,
-          rulesCustomizations = {},
-          run = "onType",
-          useESLintClass = false,
-          validate = "on",
-          workingDirectory = {
-            mode = "location"
-          }
-        },
-        on_attach = function(client, bufnr)
-          vim.api.nvim_create_autocmd("BufWritePre", {
-            buffer = bufnr,
-            command = "EslintFixAll",
-          })
+      })
+
+      -- Enable all servers (configs loaded from lsp/ folder)
+      vim.lsp.enable({ 'lua_ls', 'eslint', 'tailwindcss', 'emmet_ls', 'jsonls', 'cssls', 'html' })
+
+      -- ESLint auto-fix on save
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        pattern = { "*.js", "*.jsx", "*.ts", "*.tsx", "*.vue", "*.svelte" },
+        callback = function()
+          vim.cmd("silent! EslintFixAll")
         end,
-      })
-
-      lspconfig.tailwindcss.setup({
-        capabilities = capabilities,
-      })
-
-      lspconfig.emmet_ls.setup({
-        capabilities = capabilities,
-        filetypes = { "html", "css", "scss", "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }
-      })
-
-      lspconfig.jsonls.setup({
-        capabilities = capabilities,
-      })
-
-      lspconfig.cssls.setup({
-        capabilities = capabilities,
-      })
-
-      lspconfig.html.setup({
-        capabilities = capabilities,
-      })
-
-      lspconfig.lua_ls.setup({
-        capabilities = capabilities,
-        settings = {
-          Lua = {
-            diagnostics = {
-              globals = { "vim" }
-            }
-          }
-        }
       })
 
       -- Enhanced keymaps
@@ -124,7 +66,7 @@ return {
       vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = "Next diagnostic" })
       vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = "Show line diagnostics" })
       vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
-      
+
       -- Diagnostic configuration with modern sign definitions
       vim.diagnostic.config({
         virtual_text = {

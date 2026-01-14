@@ -3,6 +3,7 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.mouse = "a"
 vim.opt.showmode = false
+vim.opt.hidden = true  -- Keep buffers open in background (required for bufferline)
 vim.opt.clipboard = "unnamedplus"
 vim.opt.breakindent = true
 vim.opt.undofile = true
@@ -38,7 +39,7 @@ vim.opt.termguicolors = true
 -- UI improvements for better fullscreen experience
 vim.opt.laststatus = 3  -- Global status line
 vim.opt.cmdheight = 1   -- Command line height
-vim.opt.showtabline = 1 -- Show tabline only when needed
+vim.opt.showtabline = 2 -- Always show tabline (required for bufferline)
 vim.opt.shortmess:append("c") -- Don't show completion messages
 vim.opt.fillchars:append({
   horiz = '━',
@@ -70,6 +71,12 @@ vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left wind
 vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })
 vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
+
+-- Window resize with Alt + hjkl (fast, continuous)
+vim.keymap.set("n", "<A-h>", ":vertical resize -2<CR>", { desc = "Decrease window width", silent = true })
+vim.keymap.set("n", "<A-l>", ":vertical resize +2<CR>", { desc = "Increase window width", silent = true })
+vim.keymap.set("n", "<A-j>", ":resize -2<CR>", { desc = "Decrease window height", silent = true })
+vim.keymap.set("n", "<A-k>", ":resize +2<CR>", { desc = "Increase window height", silent = true })
 
 -- Better line movements
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move line down" })

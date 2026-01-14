@@ -1,5 +1,6 @@
 return {
   "luckasRanarison/tailwind-tools.nvim",
+  enabled = false, -- Disabled until plugin updates for Neovim 0.11
   dependencies = { "nvim-treesitter/nvim-treesitter" },
   opts = {
     document_color = {

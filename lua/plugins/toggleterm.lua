@@ -185,5 +185,12 @@ return {
     vim.keymap.set("n", "<leader>t2", "<cmd>2ToggleTerm<cr>", { desc = "Terminal 2" })
     vim.keymap.set("n", "<leader>t3", "<cmd>3ToggleTerm<cr>", { desc = "Terminal 3" })
     vim.keymap.set("n", "<leader>ta", "<cmd>ToggleTermToggleAll<cr>", { desc = "Toggle all terminals" })
+
+    -- New terminal in tab (always creates new instance)
+    vim.keymap.set("n", "<leader>tT", function()
+      local terms = require("toggleterm.terminal").get_all()
+      local next_id = #terms + 1
+      vim.cmd(next_id .. "ToggleTerm direction=tab")
+    end, { desc = "New terminal in tab" })
   end,
 }

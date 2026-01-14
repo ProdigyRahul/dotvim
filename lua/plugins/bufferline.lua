@@ -1,6 +1,8 @@
 return {
   "akinsho/bufferline.nvim",
   version = "*",
+  lazy = false,  -- Load immediately
+  priority = 900,  -- Load early
   dependencies = "nvim-tree/nvim-web-devicons",
   opts = {
     options = {
@@ -61,5 +63,8 @@ return {
     vim.keymap.set("n", "<leader>bl", ":BufferLineCloseLeft<CR>", { desc = "Delete buffers to the left" })
     vim.keymap.set("n", "<S-h>", ":BufferLineCyclePrev<CR>", { desc = "Previous buffer" })
     vim.keymap.set("n", "<S-l>", ":BufferLineCycleNext<CR>", { desc = "Next buffer" })
+    vim.keymap.set("n", "<leader>bb", ":BufferLinePick<CR>", { desc = "Pick buffer" })
+    vim.keymap.set("n", "<leader>bx", ":BufferLinePickClose<CR>", { desc = "Pick buffer to close" })
+    vim.keymap.set("n", "<leader>bs", ":BufferLineSortByDirectory<CR>", { desc = "Sort buffers by directory" })
   end,
 }
