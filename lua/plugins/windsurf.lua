@@ -1,6 +1,6 @@
 return {
   "Exafunction/windsurf.vim",
-  event = "BufEnter",
+  event = "InsertEnter",
   config = function()
     -- Disable default keybindings to set custom ones
     vim.g.codeium_disable_bindings = 1

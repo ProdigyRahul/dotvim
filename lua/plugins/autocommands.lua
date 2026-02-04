@@ -13,20 +13,9 @@ return {
         group = typescript_group,
         pattern = { "*.ts", "*.tsx", "*.js", "*.jsx" },
         callback = function()
-          vim.lsp.buf.format({ async = false })
-          vim.cmd("TSToolsOrganizeImports")
-          vim.cmd("TSToolsAddMissingImports")
+          vim.lsp.buf.format({ async = true })
         end,
-        desc = "Organize imports and format on save for TypeScript files",
-      })
-
-      autocmd("InsertLeave", {
-        group = typescript_group,
-        pattern = { "*.ts", "*.tsx", "*.js", "*.jsx" },
-        callback = function()
-          vim.cmd("TSToolsAddMissingImports")
-        end,
-        desc = "Add missing imports when leaving insert mode",
+        desc = "Format on save for TypeScript files",
       })
 
       local general_group = augroup("GeneralSettings", { clear = true })

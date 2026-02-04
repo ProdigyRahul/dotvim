@@ -1,7 +1,10 @@
 return {
   'stevearc/oil.nvim',
-  lazy = false, -- Oil docs recommend this for netrw replacement
   dependencies = { "nvim-tree/nvim-web-devicons" },
+  keys = {
+    { "-", "<CMD>Oil<CR>", desc = "Open parent directory" },
+    { "<leader>-", function() require("oil").toggle_float() end, desc = "Oil float" },
+  },
   config = function()
     require("oil").setup({
       -- Replace netrw as default file explorer
@@ -146,10 +149,5 @@ return {
       },
     })
     
-    -- Open parent directory in current window
-    vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
-    
-    -- Open oil in float
-    vim.keymap.set("n", "<leader>-", require("oil").toggle_float, { desc = "Open parent directory in float" })
   end,
 }

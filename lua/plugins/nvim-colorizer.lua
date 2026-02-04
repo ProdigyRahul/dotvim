@@ -6,7 +6,8 @@ return {
     require("colorizer").setup({
       -- Filetypes to enable colorizer
       filetypes = {
-        "*", -- Enable for all files
+        "css", "scss", "sass", "less", "html",
+        "javascript", "typescript", "javascriptreact", "typescriptreact",
         "!vim", -- Exclude vim files
         css = { -- Enable extra CSS features
           rgb_fn = true,
@@ -41,8 +42,8 @@ return {
       
       -- Default options for all file types
       user_default_options = {
-        -- Color name codes (e.g., Blue, red, green)
-        names = true,
+        -- Color name codes disabled for performance
+        names = false,
         
         -- #RGB hex codes
         RGB = true,
@@ -72,10 +73,8 @@ return {
         mode = "background",
         
         -- Tailwind colors (false | 'normal' | 'lsp' | 'both')
-        -- 'normal': Use tailwindcss-colors npm package
-        -- 'lsp': Use tailwindcss LSP
-        -- 'both': Use both methods
-        tailwind = "both",
+        -- Using 'lsp' only for better performance
+        tailwind = "lsp",
         
         -- Sass colors (object with 'enable' and 'parsers')
         sass = { 
@@ -116,7 +115,7 @@ return {
         require("colorizer").attach_to_buffer(0, {
           mode = "background",
           css = true,
-          tailwind = "both",
+          tailwind = "lsp",
         })
       end,
     })
@@ -149,7 +148,7 @@ return {
         -- Enhanced Tailwind support for React files
         require("colorizer").attach_to_buffer(0, {
           mode = "background",
-          tailwind = "both",
+          tailwind = "lsp",
           sass = { enable = false },
           virtualtext_inline = false,
         })

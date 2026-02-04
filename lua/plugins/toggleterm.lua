@@ -91,8 +91,6 @@ return {
       vim.keymap.set('t', '<C-l>', [[<Cmd>wincmd l<CR>]], opts)
       -- Exit terminal mode with ESC (but still allow ESC to be sent to terminal)
       vim.keymap.set('t', '<C-x>', [[<C-\><C-n>]], opts)
-      -- Send ESC to terminal
-      vim.keymap.set('t', '<C-[>', [[<C-\><C-n>]], opts)
     end
     
     -- Auto command to set terminal keymaps

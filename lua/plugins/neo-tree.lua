@@ -6,7 +6,10 @@ return {
     "MunifTanjim/nui.nvim",
     "nvim-tree/nvim-web-devicons",
   },
-  lazy = false,
+  cmd = "Neotree",
+  keys = {
+    { "<C-n>", ":Neotree toggle position=right<CR>", desc = "Toggle Neo-tree" },
+  },
   config = function()
     require("neo-tree").setup({
       open_files_in_last_window = true,  -- KEY FIX: Open in last window, keeps buffers
@@ -41,7 +44,5 @@ return {
         },
       },
     })
-
-    vim.keymap.set('n', '<C-n>', ':Neotree toggle position=right<CR>', {})
   end
 }
