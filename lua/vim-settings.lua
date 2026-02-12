@@ -103,6 +103,9 @@ vim.keymap.set("v", "<leader>d", '"_d', { desc = "Delete without yanking" })
 -- Quick save
 vim.keymap.set("n", "<leader>w", "<cmd>w<CR>", { desc = "Save file" })
 
+-- Close current buffer (tab)
+vim.keymap.set("n", "<leader>x", "<cmd>bdelete<CR>", { desc = "Close buffer" })
+
 -- File deletion shortcuts (safe with confirmation)
 vim.keymap.set("n", "<leader>df", function()
   local file = vim.fn.expand("%:p")
