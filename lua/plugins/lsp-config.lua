@@ -1,6 +1,7 @@
 return {
   {
     "williamboman/mason.nvim",
+    cmd = { "Mason", "MasonInstall", "MasonUpdate", "MasonUninstall" },
     config = function()
       require("mason").setup({
         ui = {
@@ -15,6 +16,7 @@ return {
   },
   {
     "williamboman/mason-lspconfig.nvim",
+    event = "VeryLazy",
     config = function()
       require("mason-lspconfig").setup({
         ensure_installed = {
@@ -44,14 +46,6 @@ return {
 
       -- Enable all servers (configs loaded from lsp/ folder)
       vim.lsp.enable({ 'lua_ls', 'eslint', 'tailwindcss', 'emmet_ls', 'jsonls', 'cssls', 'html' })
-
-      -- ESLint auto-fix on save
-      vim.api.nvim_create_autocmd("BufWritePre", {
-        pattern = { "*.js", "*.jsx", "*.ts", "*.tsx", "*.vue", "*.svelte" },
-        callback = function()
-          vim.cmd("silent! EslintFixAll")
-        end,
-      })
 
       -- Enhanced keymaps
       vim.keymap.set('n', 'K', vim.lsp.buf.hover, { desc = "Show hover information" })

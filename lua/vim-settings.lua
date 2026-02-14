@@ -3,7 +3,7 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.mouse = "a"
 vim.opt.showmode = false
-vim.opt.hidden = true  -- Keep buffers open in background (required for bufferline)
+vim.opt.hidden = true  -- Allow buffer switching without prompts (needed for auto-save on switch)
 vim.opt.clipboard = "unnamedplus"
 vim.opt.breakindent = true
 vim.opt.undofile = true
@@ -39,7 +39,7 @@ vim.opt.termguicolors = true
 -- UI improvements for better fullscreen experience
 vim.opt.laststatus = 3  -- Global status line
 vim.opt.cmdheight = 1   -- Command line height
-vim.opt.showtabline = 2 -- Always show tabline (required for bufferline)
+vim.opt.showtabline = 0 -- Hide tabline (bufferline disabled; single-buffer workflow)
 vim.opt.shortmess:append("c") -- Don't show completion messages
 vim.opt.fillchars:append({
   horiz = '━',
@@ -148,5 +148,4 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     vim.highlight.on_yank()
   end,
 })
-
 

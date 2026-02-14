@@ -9,6 +9,22 @@ return {
       "mxsdev/nvim-dap-vscode-js",
       "microsoft/vscode-js-debug",
     },
+    keys = {
+      { "<leader>dt", function() require("dap").toggle_breakpoint() end, desc = "Toggle breakpoint" },
+      { "<leader>db", function() require("dap").step_back() end, desc = "Step back" },
+      { "<leader>dc", function() require("dap").continue() end, desc = "Continue" },
+      { "<leader>dC", function() require("dap").run_to_cursor() end, desc = "Run to cursor" },
+      { "<leader>dd", function() require("dap").disconnect() end, desc = "Disconnect" },
+      { "<leader>dg", function() require("dap").session() end, desc = "Get session" },
+      { "<leader>di", function() require("dap").step_into() end, desc = "Step into" },
+      { "<leader>do", function() require("dap").step_over() end, desc = "Step over" },
+      { "<leader>du", function() require("dap").step_out() end, desc = "Step out" },
+      { "<leader>dp", function() require("dap").pause() end, desc = "Pause" },
+      { "<leader>dr", function() require("dap").repl.toggle() end, desc = "Toggle REPL" },
+      { "<leader>ds", function() require("dap").continue() end, desc = "Start" },
+      { "<leader>dq", function() require("dap").close() end, desc = "Quit" },
+      { "<leader>dU", function() require("dapui").toggle({ reset = true }) end, desc = "Toggle UI" },
+    },
     config = function()
       local dap = require("dap")
       local dapui = require("dapui")
@@ -65,22 +81,6 @@ return {
       dap.listeners.before.event_exited["dapui_config"] = function()
         dapui.close()
       end
-
-      -- Keymaps
-      vim.keymap.set("n", "<Leader>dt", dap.toggle_breakpoint, { desc = "Toggle breakpoint" })
-      vim.keymap.set("n", "<Leader>db", dap.step_back, { desc = "Step back" })
-      vim.keymap.set("n", "<Leader>dc", dap.continue, { desc = "Continue" })
-      vim.keymap.set("n", "<Leader>dC", dap.run_to_cursor, { desc = "Run to cursor" })
-      vim.keymap.set("n", "<Leader>dd", dap.disconnect, { desc = "Disconnect" })
-      vim.keymap.set("n", "<Leader>dg", dap.session, { desc = "Get session" })
-      vim.keymap.set("n", "<Leader>di", dap.step_into, { desc = "Step into" })
-      vim.keymap.set("n", "<Leader>do", dap.step_over, { desc = "Step over" })
-      vim.keymap.set("n", "<Leader>du", dap.step_out, { desc = "Step out" })
-      vim.keymap.set("n", "<Leader>dp", dap.pause, { desc = "Pause" })
-      vim.keymap.set("n", "<Leader>dr", dap.repl.toggle, { desc = "Toggle REPL" })
-      vim.keymap.set("n", "<Leader>ds", dap.continue, { desc = "Start" })
-      vim.keymap.set("n", "<Leader>dq", dap.close, { desc = "Quit" })
-      vim.keymap.set("n", "<Leader>dU", function() dapui.toggle({ reset = true }) end, { desc = "Toggle UI" })
     end,
   },
 }
