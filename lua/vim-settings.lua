@@ -7,6 +7,9 @@ vim.opt.hidden = true  -- Allow buffer switching without prompts (needed for aut
 vim.opt.clipboard = "unnamedplus"
 vim.opt.breakindent = true
 vim.opt.undofile = true
+vim.opt.swapfile = false
+vim.opt.backup = false
+vim.opt.writebackup = false
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.signcolumn = "yes"
@@ -148,4 +151,3 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     vim.highlight.on_yank()
   end,
 })
-
