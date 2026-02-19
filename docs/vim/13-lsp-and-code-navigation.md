@@ -32,7 +32,7 @@ These work in Normal mode when an LSP is attached:
 - References: `gr`
 - Code action: `<leader>ca`
 - Rename symbol: `<leader>rn`
-- Format: `<leader>f` (LSP format)
+- Format: `<leader>f`
 
 Diagnostics:
 
@@ -58,8 +58,8 @@ Your `typescript-tools.nvim` sets these in TS/JS buffers:
 
 ## Formatting (your config)
 
-- Conform format (manual): `<leader>mp`
-- LSP format: `<leader>f`
+- Format (Conform, with LSP fallback): `<leader>f`
+- Alternate format key (same action): `<leader>mp`
 
 Tip: if formatting fights you, pick one workflow and stick to it.
 
@@ -105,4 +105,3 @@ Rules:
 - `:h lsp`
 - `:h vim.lsp.buf`
 - `:h diagnostic`
-

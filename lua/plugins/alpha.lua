@@ -27,16 +27,44 @@ return {
     }
 
     local function footer()
-      return "TypeScript • React • Next.js"
+      local v = vim.version()
+      local nvim_ver = string.format("NVIM v%d.%d.%d", v.major, v.minor, v.patch)
+
+      local ok, lazy = pcall(require, "lazy")
+      if not ok then
+        return nvim_ver
+      end
+
+      local stats = lazy.stats() or {}
+      local count = tonumber(stats.count) or 0
+      local startuptime = tonumber(stats.startuptime)
+
+      if startuptime then
+        return string.format("⚡ %d plugins in %.0fms  •  %s", count, startuptime, nvim_ver)
+      end
+
+      return string.format("⚡ %d plugins  •  %s", count, nvim_ver)
     end
 
     dashboard.section.footer.val = footer()
 
-    dashboard.section.footer.opts.hl = "Type"
+    dashboard.section.footer.opts.hl = "Comment"
     dashboard.section.header.opts.hl = "Include"
     dashboard.section.buttons.opts.hl = "Keyword"
 
     dashboard.opts.opts.noautocmd = true
     alpha.setup(dashboard.opts)
+
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "LazyVimStarted",
+      once = true,
+      callback = function()
+        dashboard.section.footer.val = footer()
+        if vim.bo.filetype == "alpha" then
+          pcall(alpha.redraw)
+        end
+      end,
+      desc = "Refresh Alpha footer with Lazy stats",
+    })
   end,
 }

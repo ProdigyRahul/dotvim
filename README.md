@@ -8,13 +8,13 @@ A modern Neovim configuration focused on TypeScript and React development with e
 - **TypeScript & React** - First-class support with dedicated tooling
 - **Fast File Navigation** - Telescope fuzzy finder with ripgrep integration
 - **Git Integration** - Fugitive, Gitsigns, and Lazygit for complete git workflow
-- **Modern UI** - Catppuccin theme with custom dashboard and statusline
+- **Modern UI** - Aether theme with custom dashboard and statusline
 - **Smart Code Editing** - Treesitter syntax highlighting and text objects
 - **Debugging Support** - DAP integration for debugging applications
 
 ## Prerequisites
 
-- Neovim >= 0.9.0
+- Neovim >= 0.11.0
 - Git
 - Node.js & npm
 - ripgrep (`rg`) - Required for Telescope live grep
@@ -66,8 +66,9 @@ nvim
 | Key | Description | Mode |
 |-----|-------------|------|
 | `<C-h/j/k/l>` | Navigate windows | Normal |
-| `<leader>h` | Harpoon menu | Normal |
-| `<leader>a` | Add to Harpoon | Normal |
+| `<leader>hh` | Harpoon menu | Normal |
+| `<leader>ha` | Add to Harpoon | Normal |
+| `<leader>1..5` | Harpoon file slots | Normal |
 | `s` | Flash jump | Normal |
 | `S` | Flash treesitter | Normal |
 
@@ -88,7 +89,8 @@ nvim
 |-----|-------------|------|
 | `<leader>gs` | Git status | Normal |
 | `<leader>gp` | Git push | Normal |
-| `<leader>gl` | Git pull | Normal |
+| `<leader>gP` | Git pull | Normal |
+| `<leader>gl` | Git log | Normal |
 | `<leader>gg` | Lazygit | Normal |
 
 ## Plugin Categories
@@ -106,7 +108,6 @@ nvim
 - **Comment.nvim** - Smart commenting
 - **nvim-surround** - Surround text objects
 - **flash.nvim** - Enhanced motions
-- **which-key.nvim** - Keybinding hints
 
 ### File Management
 
@@ -130,11 +131,12 @@ nvim
 
 ### UI
 
-- **catppuccin** - Color scheme
+- **aether.nvim** - Color scheme
 - **alpha-nvim** - Dashboard
 - **lualine.nvim** - Status line
-- **bufferline.nvim** - Buffer tabs
 - **noice.nvim** - UI enhancements
+
+> Note: `bufferline.nvim` and `catppuccin` are present but currently disabled in this config.
 
 ### Development Tools
 
@@ -155,9 +157,6 @@ nvim
 ![Coding](assets/coding.png)
 *TypeScript development with LSP*
 
-![Git Integration](assets/git.png)
-*Git status with Fugitive and Gitsigns*
-
 ## Language Support
 
 ### TypeScript/JavaScript
@@ -169,6 +168,8 @@ nvim
 - Intelligent completions
 - Color previews
 - Class sorting
+
+> Note: `tailwind-tools.nvim` is currently disabled until it updates for Neovim 0.11.
 
 ### Other Languages
 - HTML/CSS

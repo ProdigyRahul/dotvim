@@ -15,6 +15,12 @@ vim.opt.smartcase = true
 vim.opt.signcolumn = "yes"
 vim.opt.updatetime = 250
 vim.opt.timeoutlen = 300
+-- Folding (Treesitter-based) so z* fold shortcuts work out of the box
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 99
+vim.opt.foldenable = true
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 vim.opt.list = true
@@ -54,6 +60,9 @@ vim.opt.fillchars:append({
   verthoriz = '╋',
 })
 
+-- Cursor (proper blinking bar in Insert mode)
+vim.opt.guicursor = "n-v-c-sm:block,i-ci-ve:ver25-blinkon500-blinkoff500,r-cr-o:hor20,t:block-blinkon500-blinkoff500-TermCursor"
+
 -- Better window borders
 vim.opt.winblend = 0
 vim.opt.pumblend = 0
@@ -63,6 +72,9 @@ vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
 -- Key mappings
+-- Keep <Space> from moving the cursor when used as <leader> (especially if a sequence times out)
+vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
+
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic message" })
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic message" })

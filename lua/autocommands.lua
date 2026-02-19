@@ -109,4 +109,3 @@ vim.api.nvim_create_autocmd("BufEnter", {
   end,
   desc = "Single-buffer mode cleanup",
 })
-

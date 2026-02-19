@@ -16,8 +16,7 @@ return {
     },
     config = function()
       local telescope = require('telescope')
-      local builtin = require('telescope.builtin')
-      
+
       -- Setup telescope with proper configuration
       telescope.setup({
         defaults = {
@@ -47,4 +46,3 @@ return {
     end
   }
 }
-

@@ -98,7 +98,7 @@ return {
     
     -- Keymaps for quick toggling
     vim.keymap.set("n", "<leader>ct", "<cmd>ColorizerToggle<cr>", { desc = "Toggle colorizer" })
-    vim.keymap.set("n", "<leader>ca", "<cmd>ColorizerAttachToBuffer<cr>", { desc = "Attach colorizer to buffer" })
+    vim.keymap.set("n", "<leader>cA", "<cmd>ColorizerAttachToBuffer<cr>", { desc = "Attach colorizer to buffer" })
     vim.keymap.set("n", "<leader>cd", "<cmd>ColorizerDetachFromBuffer<cr>", { desc = "Detach colorizer from buffer" })
     
     -- Function to reload colorizer (useful after changing config)

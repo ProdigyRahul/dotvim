@@ -81,49 +81,24 @@ return {
       },
     })
     
-    -- Terminal keymaps
-    function _G.set_terminal_keymaps()
-      local opts = {buffer = 0}
-      -- Navigation between windows from terminal
-      vim.keymap.set('t', '<C-h>', [[<Cmd>wincmd h<CR>]], opts)
-      vim.keymap.set('t', '<C-j>', [[<Cmd>wincmd j<CR>]], opts)
-      vim.keymap.set('t', '<C-k>', [[<Cmd>wincmd k<CR>]], opts)
-      vim.keymap.set('t', '<C-l>', [[<Cmd>wincmd l<CR>]], opts)
-      -- Exit terminal mode with ESC (but still allow ESC to be sent to terminal)
-      vim.keymap.set('t', '<C-x>', [[<C-\><C-n>]], opts)
-    end
-    
-    -- Auto command to set terminal keymaps
-    vim.cmd('autocmd! TermOpen term://*toggleterm#* lua set_terminal_keymaps()')
-    
-    -- Lazygit integration
-    local Terminal = require('toggleterm.terminal').Terminal
-    
-    -- Lazygit terminal
-    local lazygit = Terminal:new({
-      cmd = "lazygit",
-      dir = "git_dir",
-      direction = "float",
-      float_opts = {
-        border = "double",
-        width = function()
-          return math.floor(vim.o.columns * 0.95)
-        end,
-        height = function()
-          return math.floor(vim.o.lines * 0.95)
-        end,
-      },
-      on_open = function(term)
-        vim.cmd("startinsert!")
+    local term_keymaps = vim.api.nvim_create_augroup("RahulToggleTermKeymaps", { clear = true })
+    vim.api.nvim_create_autocmd("TermOpen", {
+      group = term_keymaps,
+      pattern = "term://*toggleterm#*",
+      callback = function()
+        local opts = { buffer = 0 }
+        -- Navigation between windows from terminal
+        vim.keymap.set("t", "<C-h>", [[<Cmd>wincmd h<CR>]], opts)
+        vim.keymap.set("t", "<C-j>", [[<Cmd>wincmd j<CR>]], opts)
+        vim.keymap.set("t", "<C-k>", [[<Cmd>wincmd k<CR>]], opts)
+        vim.keymap.set("t", "<C-l>", [[<Cmd>wincmd l<CR>]], opts)
+        -- Exit terminal mode (keeps <Esc> usable inside the terminal)
+        vim.keymap.set("t", "<C-x>", [[<C-\><C-n>]], opts)
       end,
-      on_close = function(term)
-        vim.cmd("startinsert!")
-      end,
+      desc = "ToggleTerm: set terminal keymaps",
     })
     
-    function _LAZYGIT_TOGGLE()
-      lazygit:toggle()
-    end
+    local Terminal = require('toggleterm.terminal').Terminal
     
     -- Node terminal
     local node = Terminal:new({
@@ -131,8 +106,7 @@ return {
       direction = "float",
       hidden = true,
     })
-    
-    function _NODE_TOGGLE()
+    local function toggle_node()
       node:toggle()
     end
     
@@ -142,8 +116,7 @@ return {
       direction = "float",
       hidden = true,
     })
-    
-    function _PYTHON_TOGGLE()
+    local function toggle_python()
       python:toggle()
     end
     
@@ -162,16 +135,14 @@ return {
         end,
       },
     })
-    
-    function _HTOP_TOGGLE()
+    local function toggle_htop()
       htop:toggle()
     end
     
     -- Custom terminal keymaps
-    vim.keymap.set("n", "<leader>gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", { noremap = true, silent = true, desc = "Lazygit" })
-    vim.keymap.set("n", "<leader>tn", "<cmd>lua _NODE_TOGGLE()<CR>", { noremap = true, silent = true, desc = "Node terminal" })
-    vim.keymap.set("n", "<leader>tp", "<cmd>lua _PYTHON_TOGGLE()<CR>", { noremap = true, silent = true, desc = "Python terminal" })
-    vim.keymap.set("n", "<leader>tH", "<cmd>lua _HTOP_TOGGLE()<CR>", { noremap = true, silent = true, desc = "Htop" })
+    vim.keymap.set("n", "<leader>tn", toggle_node, { desc = "Node terminal" })
+    vim.keymap.set("n", "<leader>tp", toggle_python, { desc = "Python terminal" })
+    vim.keymap.set("n", "<leader>tH", toggle_htop, { desc = "Htop" })
     
     -- Send lines to terminal
     vim.keymap.set("v", "<leader>ts", function()
