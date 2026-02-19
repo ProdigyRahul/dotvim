@@ -1,13 +1,13 @@
 return {
   "tpope/vim-fugitive",
   cmd = { "Git", "G", "Gstatus", "Gblame", "Gpush", "Gpull", "Gcommit", "Gdiff" },
-  config = function()
-    vim.keymap.set("n", "<leader>gs", vim.cmd.Git, { desc = "Git status" })
-    vim.keymap.set("n", "<leader>gc", ":Git commit<CR>", { desc = "Git commit" })
-    vim.keymap.set("n", "<leader>gp", ":Git push<CR>", { desc = "Git push" })
-    vim.keymap.set("n", "<leader>gP", ":Git pull<CR>", { desc = "Git pull" })
-    vim.keymap.set("n", "<leader>gb", ":Git blame<CR>", { desc = "Git blame" })
-    vim.keymap.set("n", "<leader>gd", ":Gdiff<CR>", { desc = "Git diff" })
-    vim.keymap.set("n", "<leader>gl", ":Git log --oneline<CR>", { desc = "Git log" })
-  end,
+  keys = {
+    { "<leader>gs", "<cmd>Git<cr>", desc = "Git status" },
+    { "<leader>gc", "<cmd>Git commit<cr>", desc = "Git commit" },
+    { "<leader>gp", "<cmd>Git push<cr>", desc = "Git push" },
+    { "<leader>gP", "<cmd>Git pull<cr>", desc = "Git pull" },
+    { "<leader>gb", "<cmd>Git blame<cr>", desc = "Git blame" },
+    { "<leader>gd", "<cmd>Gdiff<cr>", desc = "Git diff" },
+    { "<leader>gl", "<cmd>Git log --oneline<cr>", desc = "Git log" },
+  },
 }

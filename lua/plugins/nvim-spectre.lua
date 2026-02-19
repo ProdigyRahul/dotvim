@@ -12,6 +12,31 @@ return {
     { "<leader>sp", '<cmd>lua require("spectre").open_file_search({select_word=true})<CR>', desc = "Search in current file" },
   },
   config = function()
+    local excluded_dirs = {
+      "node_modules",
+      ".git",
+      "dist",
+      "build",
+      ".next",
+      "__pycache__",
+      ".cache",
+      ".pytest_cache",
+      "coverage",
+    }
+
+    local rg_args = {
+      "--color=never",
+      "--no-heading",
+      "--with-filename",
+      "--line-number",
+      "--column",
+      "--smart-case",
+    }
+    for _, dir in ipairs(excluded_dirs) do
+      table.insert(rg_args, "--glob")
+      table.insert(rg_args, "!" .. dir .. "/*")
+    end
+
     require('spectre').setup({
       -- Color devicons
       color_devicons = true,
@@ -122,14 +147,7 @@ return {
       find_engine = {
         ['rg'] = {
           cmd = "rg",
-          args = {
-            '--color=never',
-            '--no-heading',
-            '--with-filename',
-            '--line-number',
-            '--column',
-            '--smart-case',
-          },
+          args = rg_args,
           options = {
             ['ignore-case'] = {
               value = "--ignore-case",
@@ -235,42 +253,5 @@ return {
         cwd = vim.fn.systemlist("git rev-parse --show-toplevel")[1]
       })
     end, { desc = "Search in git repository" })
-    
-    -- Auto-exclude common directories
-    local excluded_dirs = {
-      "node_modules",
-      ".git",
-      "dist",
-      "build",
-      ".next",
-      "__pycache__",
-      ".cache",
-      ".pytest_cache",
-      "coverage",
-    }
-    
-    -- Create ripgrep ignore args
-    local rg_ignore_args = {}
-    for _, dir in ipairs(excluded_dirs) do
-      table.insert(rg_ignore_args, "--glob")
-      table.insert(rg_ignore_args, "!" .. dir .. "/*")
-    end
-    
-    -- Override default ripgrep args to include exclusions
-    require('spectre').setup({
-      find_engine = {
-        ['rg'] = {
-          cmd = "rg",
-          args = vim.list_extend({
-            '--color=never',
-            '--no-heading',
-            '--with-filename',
-            '--line-number',
-            '--column',
-            '--smart-case',
-          }, rg_ignore_args),
-        }
-      }
-    })
   end,
 }

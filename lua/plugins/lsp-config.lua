@@ -34,7 +34,11 @@ return {
   {
     "neovim/nvim-lspconfig",
     config = function()
-      local capabilities = require('cmp_nvim_lsp').default_capabilities()
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      local ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+      if ok then
+        capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
+      end
 
       -- TypeScript is now handled by typescript-tools.nvim for better performance
       -- See lua/plugins/typescript-tools.lua for TypeScript configuration
@@ -47,19 +51,20 @@ return {
       -- Enable all servers (configs loaded from lsp/ folder)
       vim.lsp.enable({ 'lua_ls', 'eslint', 'tailwindcss', 'emmet_ls', 'jsonls', 'cssls', 'html' })
 
-      -- Enhanced keymaps
-      vim.keymap.set('n', 'K', vim.lsp.buf.hover, { desc = "Show hover information" })
-      vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = "Go to definition" })
-      vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { desc = "Go to declaration" })
-      vim.keymap.set('n', 'gr', vim.lsp.buf.references, { desc = "Show references" })
-      vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { desc = "Go to implementation" })
-      vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, { desc = "Code actions" })
-      vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, { desc = "Rename symbol" })
-      vim.keymap.set('n', '<leader>f', function() vim.lsp.buf.format { async = true } end, { desc = "Format file" })
-      vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
-      vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = "Next diagnostic" })
-      vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = "Show line diagnostics" })
-      vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
+      local lsp_keymaps = vim.api.nvim_create_augroup("RahulLspKeymaps", { clear = true })
+      vim.api.nvim_create_autocmd("LspAttach", {
+        group = lsp_keymaps,
+        callback = function(ev)
+          local opts = { buffer = ev.buf, silent = true }
+          vim.keymap.set("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Show hover information" }))
+          vim.keymap.set("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go to definition" }))
+          vim.keymap.set("n", "gD", vim.lsp.buf.declaration, vim.tbl_extend("force", opts, { desc = "Go to declaration" }))
+          vim.keymap.set("n", "gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { desc = "Show references" }))
+          vim.keymap.set("n", "gi", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "Go to implementation" }))
+          vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code actions" }))
+        end,
+        desc = "LSP: set buffer-local keymaps",
+      })
 
       -- Diagnostic configuration with modern sign definitions
       vim.diagnostic.config({
