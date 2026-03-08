@@ -1,3 +1,20 @@
+local function find_files_default()
+  local cmd = { "fd", "--type", "f", "--hidden", "--exclude", ".git" }
+  if vim.fn.filereadable(".gitignore") == 1 then
+    vim.list_extend(cmd, { "--ignore-file", ".gitignore" })
+  end
+  require("telescope.builtin").find_files({
+    find_command = cmd,
+  })
+end
+
+local function find_files_with_ignored()
+  require("telescope.builtin").find_files({
+    prompt_title = "Find files (include ignored)",
+    find_command = { "fd", "--type", "f", "--hidden", "--no-ignore", "--exclude", ".git" },
+  })
+end
+
 return {
   {
     'nvim-telescope/telescope.nvim',
@@ -8,8 +25,37 @@ return {
     },
     cmd = { "Telescope" },
     keys = {
-      { "<C-p>", "<cmd>Telescope find_files<cr>", desc = "Find files" },
-      { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find files" },
+      { "<C-p>", find_files_default, desc = "Find files" },
+      { "<leader>ff", find_files_default, desc = "Find files" },
+      { "<leader>fF", find_files_with_ignored, desc = "Find files (include ignored)" },
+      {
+        "<leader>fE",
+        function()
+          require("telescope.builtin").find_files({
+            prompt_title = "Env files (.env*)",
+            hidden = true,
+            find_command = {
+              "rg",
+              "--files",
+              "--hidden",
+              "--no-ignore-vcs",
+              "--glob",
+              "!.git/*",
+              "--glob",
+              "!**/node_modules/*",
+              "--glob",
+              "!**/.next/*",
+              "--glob",
+              "!**/dist/*",
+              "--glob",
+              "!**/build/*",
+              "--glob",
+              "**/.env*",
+            },
+          })
+        end,
+        desc = "Find .env files (include gitignored)",
+      },
       { "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Live grep" },
       { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
       { "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "Help tags" },
@@ -31,7 +77,6 @@ return {
         pickers = {
           find_files = {
             hidden = true,
-            find_command = { "rg", "--files", "--hidden", "--glob", "!.git/*" }
           }
         },
         extensions = {
@@ -40,7 +85,7 @@ return {
           }
         }
       })
-      
+
       -- Load extensions after setup
       telescope.load_extension("ui-select")
     end

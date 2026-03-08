@@ -56,7 +56,9 @@ nvim
 | Key | Description | Mode |
 |-----|-------------|------|
 | `<Space>` | Leader key | Normal |
-| `<C-p>` | Find files | Normal |
+| `<C-p>` | Find files (respects `.gitignore`) | Normal |
+| `<leader>ff` | Find files (respects `.gitignore`) | Normal |
+| `<leader>fF` | Find files including ignored files | Normal |
 | `<leader>fg` | Live grep | Normal |
 | `<leader>fb` | Browse buffers | Normal |
 | `<C-n>` | Toggle file tree | Normal |
