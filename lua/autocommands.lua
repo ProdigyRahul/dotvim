@@ -38,6 +38,25 @@ local function autosave_buf(bufnr)
   end
 end
 
+local function close_empty_windows(current_win)
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if win ~= current_win and vim.api.nvim_win_is_valid(win) then
+      local buf = vim.api.nvim_win_get_buf(win)
+      local lines = vim.api.nvim_buf_get_lines(buf, 0, 1, false)
+      local is_empty = vim.bo[buf].buftype == ""
+        and vim.bo[buf].filetype == ""
+        and vim.api.nvim_buf_get_name(buf) == ""
+        and not vim.bo[buf].modified
+        and #lines == 1
+        and lines[1] == ""
+
+      if is_empty then
+        pcall(vim.api.nvim_win_close, win, true)
+      end
+    end
+  end
+end
+
 -- Remember cursor position
 vim.api.nvim_create_autocmd("BufReadPost", {
   group = augroup,
@@ -71,7 +90,7 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.linebreak = true
     vim.opt_local.spell = true
     vim.opt_local.textwidth = 80
-    vim.opt_local.colorcolumn = "80"
+    vim.opt_local.colorcolumn = ""
   end,
   desc = "Enable wrap and spell for git commits and markdown",
 })
@@ -108,6 +127,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
         end
       end
     end
+    close_empty_windows(vim.api.nvim_get_current_win())
     cleaning = false
   end,
   desc = "Single-buffer mode cleanup",

@@ -29,7 +29,6 @@ vim.opt.inccommand = "split"
 vim.opt.cursorline = true
 vim.opt.scrolloff = 10
 vim.opt.hlsearch = true
-vim.opt.colorcolumn = "100"
 
 -- Indentation
 vim.opt.expandtab = true
@@ -52,13 +51,13 @@ vim.opt.cmdheight = 1   -- Command line height
 vim.opt.showtabline = 0 -- Hide tabline (bufferline disabled; single-buffer workflow)
 vim.opt.shortmess:append("c") -- Don't show completion messages
 vim.opt.fillchars:append({
-  horiz = '━',
-  horizup = '┻',
-  horizdown = '┳',
-  vert = '┃',
-  vertleft = '┫',
-  vertright = '┣',
-  verthoriz = '╋',
+  horiz = " ",
+  horizup = " ",
+  horizdown = " ",
+  vert = " ",
+  vertleft = " ",
+  vertright = " ",
+  verthoriz = " ",
 })
 
 -- Cursor (proper blinking bar in Insert mode)
