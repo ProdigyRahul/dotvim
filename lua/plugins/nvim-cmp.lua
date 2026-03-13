@@ -43,7 +43,12 @@ return {
             elseif luasnip.expand_or_jumpable() then
               luasnip.expand_or_jump()
             else
-              fallback()
+              local ok, suggestion = pcall(require, "supermaven-nvim.completion_preview")
+              if ok and suggestion.has_suggestion() then
+                suggestion.on_accept_suggestion()
+              else
+                fallback()
+              end
             end
           end, { "i", "s" }),
           ["<S-Tab>"] = cmp.mapping(function(fallback)
