@@ -68,9 +68,7 @@ return {
 
       -- Diagnostic configuration with modern sign definitions
       vim.diagnostic.config({
-        virtual_text = {
-          prefix = "●",
-        },
+        virtual_text = false,
         signs = {
           text = {
             [vim.diagnostic.severity.ERROR] = " ",

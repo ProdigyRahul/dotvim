@@ -95,6 +95,20 @@ vim.api.nvim_create_autocmd("FileType", {
   desc = "Enable wrap and spell for git commits and markdown",
 })
 
+-- Auto-open neo-tree on the right so code pane stays at ~70% width.
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = augroup,
+  callback = function()
+    -- Delay slightly so all plugins are loaded first
+    vim.defer_fn(function()
+      if vim.bo.buftype == "" then
+        vim.cmd("Neotree show position=right")
+      end
+    end, 50)
+  end,
+  desc = "Auto-open neo-tree sidebar for 70/30 layout",
+})
+
 -- Auto-save when leaving a file buffer (without triggering formatters/fixers).
 vim.api.nvim_create_autocmd("BufLeave", {
   group = augroup,
