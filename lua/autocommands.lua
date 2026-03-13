@@ -17,18 +17,6 @@ local function is_normal_file_buf(bufnr)
   return true
 end
 
-local function is_editable_file_buf(bufnr)
-  if not vim.api.nvim_buf_is_valid(bufnr) then
-    return false
-  end
-
-  if vim.bo[bufnr].buftype ~= "" then
-    return false
-  end
-
-  return vim.bo[bufnr].filetype ~= "neo-tree" and vim.bo[bufnr].filetype ~= "layout-spacer"
-end
-
 local function autosave_buf(bufnr)
   if not is_normal_file_buf(bufnr) then
     return
@@ -69,118 +57,6 @@ local function close_empty_windows(current_win)
   end
 end
 
-local function find_spacer_window()
-  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-    local buf = vim.api.nvim_win_get_buf(win)
-    if vim.bo[buf].filetype == "layout-spacer" then
-      return win
-    end
-  end
-end
-
-local function find_neotree_window()
-  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-    local buf = vim.api.nvim_win_get_buf(win)
-    if vim.bo[buf].filetype == "neo-tree" then
-      return win
-    end
-  end
-end
-
-local function create_spacer_window(anchor_win, width)
-  local current_win = vim.api.nvim_get_current_win()
-  local spacer_buf = vim.api.nvim_create_buf(false, true)
-
-  vim.bo[spacer_buf].buftype = "nofile"
-  vim.bo[spacer_buf].bufhidden = "wipe"
-  vim.bo[spacer_buf].swapfile = false
-  vim.bo[spacer_buf].modifiable = false
-  vim.bo[spacer_buf].filetype = "layout-spacer"
-
-  vim.api.nvim_set_current_win(anchor_win)
-  vim.cmd("botright vsplit")
-
-  local spacer_win = vim.api.nvim_get_current_win()
-  vim.api.nvim_win_set_buf(spacer_win, spacer_buf)
-  vim.wo[spacer_win].number = false
-  vim.wo[spacer_win].relativenumber = false
-  vim.wo[spacer_win].signcolumn = "no"
-  vim.wo[spacer_win].foldcolumn = "0"
-  vim.wo[spacer_win].spell = false
-  vim.wo[spacer_win].list = false
-  vim.wo[spacer_win].wrap = false
-  vim.wo[spacer_win].cursorline = false
-  vim.wo[spacer_win].winfixwidth = true
-  vim.wo[spacer_win].winbar = ""
-  vim.wo[spacer_win].statuscolumn = ""
-  vim.wo[spacer_win].colorcolumn = ""
-  vim.wo[spacer_win].fillchars = "eob: "
-  vim.api.nvim_win_set_width(spacer_win, width)
-
-  vim.api.nvim_set_current_win(current_win)
-
-  return spacer_win
-end
-
-local layout_locked = false
-
-local function apply_code_width_layout()
-  if layout_locked then
-    return
-  end
-
-  layout_locked = true
-
-  local editable_wins = {}
-  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-    local buf = vim.api.nvim_win_get_buf(win)
-    if is_editable_file_buf(buf) then
-      table.insert(editable_wins, win)
-    end
-  end
-
-  local spacer_win = find_spacer_window()
-  local neotree_win = find_neotree_window()
-
-  if #editable_wins ~= 1 then
-    if spacer_win and vim.api.nvim_win_is_valid(spacer_win) then
-      pcall(vim.api.nvim_win_close, spacer_win, true)
-    end
-    layout_locked = false
-    return
-  end
-
-  local code_win = editable_wins[1]
-  local sidebar_width = math.max(24, math.floor(vim.o.columns * 0.30))
-  vim.wo[code_win].winfixwidth = false
-
-  if neotree_win and vim.api.nvim_win_is_valid(neotree_win) then
-    if spacer_win and vim.api.nvim_win_is_valid(spacer_win) then
-      pcall(vim.api.nvim_win_close, spacer_win, true)
-    end
-    vim.wo[neotree_win].winfixwidth = true
-    pcall(vim.api.nvim_win_set_width, neotree_win, sidebar_width)
-  else
-    if not (spacer_win and vim.api.nvim_win_is_valid(spacer_win)) then
-      spacer_win = create_spacer_window(code_win, sidebar_width)
-    end
-    vim.wo[spacer_win].winfixwidth = true
-    pcall(vim.api.nvim_win_set_width, spacer_win, sidebar_width)
-  end
-
-  pcall(vim.api.nvim_set_current_win, code_win)
-  layout_locked = false
-end
-
-local function schedule_code_width_layout()
-  vim.schedule(function()
-    if vim.v.exiting ~= vim.NIL and vim.v.exiting ~= 0 then
-      return
-    end
-    pcall(apply_code_width_layout)
-  end)
-end
-
 -- Remember cursor position
 vim.api.nvim_create_autocmd("BufReadPost", {
   group = augroup,
@@ -219,6 +95,29 @@ vim.api.nvim_create_autocmd("FileType", {
   desc = "Enable wrap and spell for git commits and markdown",
 })
 
+vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", "FileType" }, {
+  group = augroup,
+  pattern = "*",
+  callback = function(ev)
+    local buf = ev.buf
+    if not vim.api.nvim_buf_is_valid(buf) then
+      return
+    end
+
+    if vim.bo[buf].buftype ~= "" then
+      return
+    end
+
+    if vim.bo[buf].filetype == "markdown" or vim.bo[buf].filetype == "gitcommit" then
+      return
+    end
+
+    vim.opt_local.wrap = false
+    vim.opt_local.linebreak = false
+  end,
+  desc = "Disable wrapping in code and normal file buffers",
+})
+
 -- Auto-save when leaving a file buffer (without triggering formatters/fixers).
 vim.api.nvim_create_autocmd("BufLeave", {
   group = augroup,
@@ -253,15 +152,6 @@ vim.api.nvim_create_autocmd("BufEnter", {
     end
     close_empty_windows(vim.api.nvim_get_current_win())
     cleaning = false
-    schedule_code_width_layout()
   end,
   desc = "Single-buffer mode cleanup",
-})
-
-vim.api.nvim_create_autocmd({ "VimEnter", "TabEnter", "VimResized", "WinNew", "WinClosed" }, {
-  group = augroup,
-  callback = function()
-    schedule_code_width_layout()
-  end,
-  desc = "Keep code window at 70 percent width",
 })
