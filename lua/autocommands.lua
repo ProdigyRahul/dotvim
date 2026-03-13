@@ -114,6 +114,7 @@ local function create_spacer_window(anchor_win, width)
   vim.wo[spacer_win].winbar = ""
   vim.wo[spacer_win].statuscolumn = ""
   vim.wo[spacer_win].colorcolumn = ""
+  vim.wo[spacer_win].fillchars = "eob: "
   vim.api.nvim_win_set_width(spacer_win, width)
 
   vim.api.nvim_set_current_win(current_win)

@@ -51,13 +51,14 @@ vim.opt.cmdheight = 1   -- Command line height
 vim.opt.showtabline = 0 -- Hide tabline (bufferline disabled; single-buffer workflow)
 vim.opt.shortmess:append("c") -- Don't show completion messages
 vim.opt.fillchars:append({
-  horiz = " ",
-  horizup = " ",
-  horizdown = " ",
-  vert = " ",
-  vertleft = " ",
-  vertright = " ",
-  verthoriz = " ",
+  eob = " ",
+  horiz = "─",
+  horizup = "┴",
+  horizdown = "┬",
+  vert = "│",
+  vertleft = "┤",
+  vertright = "├",
+  verthoriz = "┼",
 })
 
 -- Cursor (proper blinking bar in Insert mode)
