@@ -12,14 +12,11 @@ return {
   },
   config = function()
     require("neo-tree").setup({
-      close_if_last_window = true,
       open_files_in_last_window = true,  -- KEY FIX: Open in last window, keeps buffers
       open_files_do_not_replace_types = { "terminal", "trouble", "qf", "edgy" },
       window = {
         position = "right",
-        width = function()
-          return math.max(35, math.floor(vim.o.columns * 0.30))
-        end,
+        width = 35,
         mappings = {
           ["<cr>"] = "open",
           ["s"] = "open_vsplit",
