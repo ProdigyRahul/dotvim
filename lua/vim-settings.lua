@@ -23,8 +23,11 @@ vim.opt.foldlevelstart = 99
 vim.opt.foldenable = true
 vim.opt.splitright = true
 vim.opt.splitbelow = true
-vim.opt.wrap = false
-vim.opt.linebreak = false
+vim.opt.wrap = true
+vim.opt.linebreak = true
+vim.opt.showbreak = "↪ "
+vim.opt.sidescrolloff = 8
+vim.opt.colorcolumn = "120"
 vim.opt.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.opt.inccommand = "split"

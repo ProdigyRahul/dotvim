@@ -95,29 +95,6 @@ vim.api.nvim_create_autocmd("FileType", {
   desc = "Enable wrap and spell for git commits and markdown",
 })
 
-vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", "FileType" }, {
-  group = augroup,
-  pattern = "*",
-  callback = function(ev)
-    local buf = ev.buf
-    if not vim.api.nvim_buf_is_valid(buf) then
-      return
-    end
-
-    if vim.bo[buf].buftype ~= "" then
-      return
-    end
-
-    if vim.bo[buf].filetype == "markdown" or vim.bo[buf].filetype == "gitcommit" then
-      return
-    end
-
-    vim.opt_local.wrap = false
-    vim.opt_local.linebreak = false
-  end,
-  desc = "Disable wrapping in code and normal file buffers",
-})
-
 -- Auto-save when leaving a file buffer (without triggering formatters/fixers).
 vim.api.nvim_create_autocmd("BufLeave", {
   group = augroup,
