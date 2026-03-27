@@ -38,24 +38,9 @@ return {
           ["<C-e>"] = cmp.mapping.abort(),
           ["<CR>"] = cmp.mapping.confirm({ select = false }),
           ["<Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item()
-            elseif luasnip.expand_or_jumpable() then
-              luasnip.expand_or_jump()
-            else
-              local ok, suggestion = pcall(require, "supermaven-nvim.completion_preview")
-              if ok and suggestion.has_suggestion() then
-                suggestion.on_accept_suggestion()
-              else
-                fallback()
-              end
-            end
-          end, { "i", "s" }),
-          ["<S-Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item()
-            elseif luasnip.jumpable(-1) then
-              luasnip.jump(-1)
+            local ok, suggestion = pcall(require, "supermaven-nvim.completion_preview")
+            if ok and suggestion.has_suggestion() then
+              suggestion.on_accept_suggestion()
             else
               fallback()
             end

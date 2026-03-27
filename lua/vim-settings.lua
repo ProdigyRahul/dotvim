@@ -80,6 +80,12 @@ vim.g.loaded_netrwPlugin = 1
 -- Keep <Space> from moving the cursor when used as <leader> (especially if a sequence times out)
 vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
 
+-- Clear Neovim's default snippet Tab bindings so completion owns these keys explicitly.
+pcall(vim.keymap.del, "i", "<Tab>")
+pcall(vim.keymap.del, "s", "<Tab>")
+pcall(vim.keymap.del, "i", "<S-Tab>")
+pcall(vim.keymap.del, "s", "<S-Tab>")
+
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic message" })
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic message" })
