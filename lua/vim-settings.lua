@@ -98,13 +98,17 @@ vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right win
 vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
 
--- Window resize with Alt + hjkl (fast, continuous)
-vim.keymap.set("n", "<A-h>", ":vertical resize -2<CR>", { desc = "Decrease window width", silent = true })
-vim.keymap.set("n", "<A-l>", ":vertical resize +2<CR>", { desc = "Increase window width", silent = true })
-vim.keymap.set("n", "<A-j>", ":resize -2<CR>", { desc = "Decrease window height", silent = true })
-vim.keymap.set("n", "<A-k>", ":resize +2<CR>", { desc = "Increase window height", silent = true })
+-- Window resize with Ctrl + Arrow keys
+vim.keymap.set("n", "<C-Left>", ":vertical resize -2<CR>", { desc = "Decrease window width", silent = true })
+vim.keymap.set("n", "<C-Right>", ":vertical resize +2<CR>", { desc = "Increase window width", silent = true })
+vim.keymap.set("n", "<C-Up>", ":resize -2<CR>", { desc = "Decrease window height", silent = true })
+vim.keymap.set("n", "<C-Down>", ":resize +2<CR>", { desc = "Increase window height", silent = true })
 
 -- Better line movements
+vim.keymap.set("n", "]e", ":m .+1<CR>==", { desc = "Move line down", silent = true })
+vim.keymap.set("n", "[e", ":m .-2<CR>==", { desc = "Move line up", silent = true })
+vim.keymap.set("v", "]e", ":m '>+1<CR>gv=gv", { desc = "Move selection down", silent = true })
+vim.keymap.set("v", "[e", ":m '<-2<CR>gv=gv", { desc = "Move selection up", silent = true })
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move line down" })
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move line up" })
 

@@ -17,6 +17,21 @@ local function is_normal_file_buf(bufnr)
   return true
 end
 
+local function ensure_parent_dir(bufnr)
+  if not is_normal_file_buf(bufnr) then
+    return
+  end
+
+  local path = vim.api.nvim_buf_get_name(bufnr)
+  local parent = vim.fn.fnamemodify(path, ":p:h")
+
+  if parent == "" or vim.fn.isdirectory(parent) == 1 then
+    return
+  end
+
+  vim.fn.mkdir(parent, "p")
+end
+
 local function autosave_buf(bufnr)
   if not is_normal_file_buf(bufnr) then
     return
@@ -29,6 +44,8 @@ local function autosave_buf(bufnr)
   if not vim.bo[bufnr].modifiable or vim.bo[bufnr].readonly then
     return
   end
+
+  ensure_parent_dir(bufnr)
 
   local ok, err = pcall(vim.api.nvim_buf_call, bufnr, function()
     vim.cmd("noautocmd update")
@@ -69,6 +86,16 @@ vim.api.nvim_create_autocmd("BufReadPost", {
     end
   end,
   desc = "Remember cursor position",
+})
+
+-- Create parent directories as soon as a new nested file path is opened.
+vim.api.nvim_create_autocmd("BufNewFile", {
+  group = augroup,
+  pattern = "*",
+  callback = function(ev)
+    ensure_parent_dir(ev.buf)
+  end,
+  desc = "Auto-create parent directories for new files",
 })
 
 -- Close certain windows with q
@@ -116,6 +143,15 @@ vim.api.nvim_create_autocmd("BufLeave", {
     autosave_buf(ev.buf)
   end,
   desc = "Auto-save on buffer leave",
+})
+
+-- Create missing parent directories before writing a file.
+vim.api.nvim_create_autocmd("BufWritePre", {
+  group = augroup,
+  callback = function(ev)
+    ensure_parent_dir(ev.buf)
+  end,
+  desc = "Auto-create parent directories on save",
 })
 
 -- Keep only one listed file buffer around at a time.
