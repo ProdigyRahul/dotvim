@@ -1,0 +1,107 @@
+{
+  "reactArrowFunctionExportComponent": {
+    "prefix": "rafce",
+    "body": [
+      "const ${1:${TM_FILENAME_BASE}} = () => {",
+      "  return (",
+      "    <div>$0</div>",
+      "  )",
+      "}",
+      "",
+      "export default ${1:${TM_FILENAME_BASE}}"
+    ],
+    "description": "React Arrow Function Export Component"
+  },
+  "reactFunctionalExportComponent": {
+    "prefix": "rfce",
+    "body": [
+      "function ${1:${TM_FILENAME_BASE}}() {",
+      "  return (",
+      "    <div>$0</div>",
+      "  )",
+      "}",
+      "",
+      "export default ${1:${TM_FILENAME_BASE}}"
+    ],
+    "description": "React Functional Export Component"
+  },
+  "tsReactArrowFunctionExportComponent": {
+    "prefix": "tsrafce",
+    "body": [
+      "type Props = {$2}",
+      "",
+      "const ${1:${TM_FILENAME_BASE}} = (props: Props) => {",
+      "  return (",
+      "    <div>$0</div>",
+      "  )",
+      "}",
+      "",
+      "export default ${1:${TM_FILENAME_BASE}}"
+    ],
+    "description": "TS React Arrow Function Export Component"
+  },
+  "tsReactFunctionalExportComponent": {
+    "prefix": "tsrfce",
+    "body": [
+      "type Props = {$2}",
+      "",
+      "function ${1:${TM_FILENAME_BASE}}({}: Props) {",
+      "  return (",
+      "    <div>$0</div>",
+      "  )",
+      "}",
+      "",
+      "export default ${1:${TM_FILENAME_BASE}}"
+    ],
+    "description": "TS React Functional Export Component"
+  },
+  "useReducer": {
+    "prefix": "urd",
+    "body": [
+      "const [${1:state}, dispatch] = useReducer(${2:reducer}, ${3:initialState})"
+    ],
+    "description": "useReducer hook"
+  },
+  "useState typed": {
+    "prefix": "ust",
+    "body": "const [${1:state}, set${1/(.*)/${1:/capitalize}/}] = useState<${2:type}>(${3:initialValue})$0",
+    "description": "useState with TypeScript generic"
+  },
+  "useRef typed": {
+    "prefix": "urt",
+    "body": "const ${1:ref} = useRef<${2:HTMLDivElement}>(${3:null})$0",
+    "description": "useRef with TypeScript generic"
+  },
+  "useEffect mount": {
+    "prefix": "uem",
+    "body": [
+      "useEffect(() => {",
+      "  ${1}",
+      "",
+      "  return () => {",
+      "    ${2}",
+      "  }",
+      "}, [])$0"
+    ],
+    "description": "useEffect that runs only on mount (empty deps)"
+  },
+  "TS Arrow Component with Props": {
+    "prefix": "tsafcp",
+    "body": [
+      "interface ${1:${TM_FILENAME_BASE}}Props {",
+      "  ${2}",
+      "}",
+      "",
+      "const ${1:${TM_FILENAME_BASE}} = ({ ${3} }: ${1:${TM_FILENAME_BASE}}Props) => {",
+      "  return (",
+      "    <div>",
+      "      $0",
+      "    </div>",
+      "  )",
+      "}",
+      "",
+      "export default ${1:${TM_FILENAME_BASE}}"
+    ],
+    "description": "TypeScript arrow function component with Props interface"
+  }
+}

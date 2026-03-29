@@ -18,6 +18,10 @@ return {
       local lspkind = require("lspkind")
 
       require("luasnip.loaders.from_vscode").lazy_load()
+      require("luasnip.loaders.from_vscode").lazy_load({
+        paths = { vim.fn.stdpath("config") .. "/snippets" },
+        override_priority = 2000,
+      })
 
       cmp.setup({
         snippet = {
@@ -36,7 +40,7 @@ return {
           ["<C-f>"] = cmp.mapping.scroll_docs(4),
           ["<C-Space>"] = cmp.mapping.complete(),
           ["<C-e>"] = cmp.mapping.abort(),
-          ["<CR>"] = cmp.mapping.confirm({ select = false }),
+          ["<CR>"] = cmp.mapping.confirm({ select = true }),
           ["<Tab>"] = cmp.mapping(function(fallback)
             local ok, suggestion = pcall(require, "supermaven-nvim.completion_preview")
             if ok and suggestion.has_suggestion() then
@@ -65,6 +69,15 @@ return {
           }),
         },
       })
+
+      -- Snippet jump: <C-l> forward, <C-h> backward
+      vim.keymap.set({ "i", "s" }, "<C-l>", function()
+        if luasnip.jumpable(1) then luasnip.jump(1) end
+      end, { silent = true, desc = "LuaSnip jump forward" })
+
+      vim.keymap.set({ "i", "s" }, "<C-h>", function()
+        if luasnip.jumpable(-1) then luasnip.jump(-1) end
+      end, { silent = true, desc = "LuaSnip jump backward" })
 
       -- Use buffer source for `/` and `?`
       cmp.setup.cmdline({ "/", "?" }, {
