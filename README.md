@@ -96,7 +96,9 @@ nvim
 | `<C-k>` | Select previous completion item | Insert |
 | `<C-Space>` | Open completion menu | Insert |
 | `<CR>` | Confirm selected completion item | Insert |
-| `<Tab>` | Accept Supermaven suggestion or fallback | Insert |
+| `<C-g>` | Accept Copilot suggestion | Insert |
+| `<M-]>` / `<M-[>` | Next / previous Copilot suggestion | Insert |
+| `<C-]>` | Dismiss Copilot suggestion | Insert |
 
 ### Git
 

@@ -41,14 +41,6 @@ return {
           ["<C-Space>"] = cmp.mapping.complete(),
           ["<C-e>"] = cmp.mapping.abort(),
           ["<CR>"] = cmp.mapping.confirm({ select = true }),
-          ["<Tab>"] = cmp.mapping(function(fallback)
-            local ok, suggestion = pcall(require, "supermaven-nvim.completion_preview")
-            if ok and suggestion.has_suggestion() then
-              suggestion.on_accept_suggestion()
-            else
-              fallback()
-            end
-          end, { "i", "s" }),
         }),
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
