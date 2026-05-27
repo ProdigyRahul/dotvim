@@ -23,10 +23,8 @@ vim.opt.foldlevelstart = 99
 vim.opt.foldenable = true
 vim.opt.splitright = true
 vim.opt.splitbelow = true
-vim.opt.wrap = true
-vim.opt.linebreak = true
-vim.opt.showbreak = "  "
-vim.opt.sidescrolloff = 8
+vim.opt.wrap = false
+vim.opt.linebreak = false
 vim.opt.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.opt.inccommand = "split"
@@ -80,12 +78,6 @@ vim.g.loaded_netrwPlugin = 1
 -- Keep <Space> from moving the cursor when used as <leader> (especially if a sequence times out)
 vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
 
--- Clear Neovim's default snippet Tab bindings so completion owns these keys explicitly.
-pcall(vim.keymap.del, "i", "<Tab>")
-pcall(vim.keymap.del, "s", "<Tab>")
-pcall(vim.keymap.del, "i", "<S-Tab>")
-pcall(vim.keymap.del, "s", "<S-Tab>")
-
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic message" })
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic message" })
@@ -98,17 +90,15 @@ vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right win
 vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
 
--- Window resize with Ctrl + Arrow keys
-vim.keymap.set("n", "<C-Left>", ":vertical resize -2<CR>", { desc = "Decrease window width", silent = true })
-vim.keymap.set("n", "<C-Right>", ":vertical resize +2<CR>", { desc = "Increase window width", silent = true })
-vim.keymap.set("n", "<C-Up>", ":resize -2<CR>", { desc = "Decrease window height", silent = true })
-vim.keymap.set("n", "<C-Down>", ":resize +2<CR>", { desc = "Increase window height", silent = true })
+-- Window resize with Alt + hjkl (fast, continuous)
+vim.keymap.set("n", "<A-h>", ":vertical resize -2<CR>", { desc = "Decrease window width", silent = true })
+vim.keymap.set("n", "<A-l>", ":vertical resize +2<CR>", { desc = "Increase window width", silent = true })
+vim.keymap.set("n", "<A-j>", ":resize -2<CR>", { desc = "Decrease window height", silent = true })
+vim.keymap.set("n", "<A-k>", ":resize +2<CR>", { desc = "Increase window height", silent = true })
 
 -- Better line movements
-vim.keymap.set("n", "]e", ":m .+1<CR>==", { desc = "Move line down", silent = true })
-vim.keymap.set("n", "[e", ":m .-2<CR>==", { desc = "Move line up", silent = true })
-vim.keymap.set("v", "]e", ":m '>+1<CR>gv=gv", { desc = "Move selection down", silent = true })
-vim.keymap.set("v", "[e", ":m '<-2<CR>gv=gv", { desc = "Move selection up", silent = true })
+vim.keymap.set("n", "<leader>j", ":m .+1<CR>==", { desc = "Move line down", silent = true })
+vim.keymap.set("n", "<leader>k", ":m .-2<CR>==", { desc = "Move line up", silent = true })
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move line down" })
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move line up" })
 
