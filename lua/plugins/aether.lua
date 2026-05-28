@@ -1,7 +1,6 @@
 return {
   {
     "bjarneo/aether.nvim",
-    enabled = false,
     branch = "v3",
     name = "aether",
     lazy = false,

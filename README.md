@@ -56,8 +56,8 @@ nvim
 | Key | Description | Mode |
 |-----|-------------|------|
 | `<Space>` | Leader key | Normal |
-| `<C-p>` | Find files without junk dirs like `node_modules` | Normal |
-| `<leader>ff` | Find files without junk dirs like `node_modules` | Normal |
+| `<C-p>` | Find files (respects `.gitignore`) | Normal |
+| `<leader>ff` | Find files (respects `.gitignore`) | Normal |
 | `<leader>fF` | Find files including ignored files | Normal |
 | `<leader>fg` | Live grep | Normal |
 | `<leader>fb` | Browse buffers | Normal |
@@ -68,9 +68,6 @@ nvim
 | Key | Description | Mode |
 |-----|-------------|------|
 | `<C-h/j/k/l>` | Navigate windows | Normal |
-| `[e` / `]e` | Move current line up/down | Normal |
-| `[e` / `]e` | Move selected lines up/down | Visual |
-| `<C-Arrow>` | Resize windows | Normal |
 | `<leader>hh` | Harpoon menu | Normal |
 | `<leader>ha` | Add to Harpoon | Normal |
 | `<leader>1..5` | Harpoon file slots | Normal |
@@ -87,18 +84,6 @@ nvim
 | `<leader>ca` | Code actions | Normal |
 | `<leader>rn` | Rename symbol | Normal |
 | `<leader>f` | Format buffer | Normal |
-
-### Completion
-
-| Key | Description | Mode |
-|-----|-------------|------|
-| `<C-j>` | Select next completion item | Insert |
-| `<C-k>` | Select previous completion item | Insert |
-| `<C-Space>` | Open completion menu | Insert |
-| `<CR>` | Confirm selected completion item | Insert |
-| `<C-g>` | Accept Copilot suggestion | Insert |
-| `<M-]>` / `<M-[>` | Next / previous Copilot suggestion | Insert |
-| `<C-]>` | Dismiss Copilot suggestion | Insert |
 
 ### Git
 

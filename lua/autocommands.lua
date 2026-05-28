@@ -17,21 +17,6 @@ local function is_normal_file_buf(bufnr)
   return true
 end
 
-local function ensure_parent_dir(bufnr)
-  if not is_normal_file_buf(bufnr) then
-    return
-  end
-
-  local path = vim.api.nvim_buf_get_name(bufnr)
-  local parent = vim.fn.fnamemodify(path, ":p:h")
-
-  if parent == "" or vim.fn.isdirectory(parent) == 1 then
-    return
-  end
-
-  vim.fn.mkdir(parent, "p")
-end
-
 local function autosave_buf(bufnr)
   if not is_normal_file_buf(bufnr) then
     return
@@ -44,8 +29,6 @@ local function autosave_buf(bufnr)
   if not vim.bo[bufnr].modifiable or vim.bo[bufnr].readonly then
     return
   end
-
-  ensure_parent_dir(bufnr)
 
   local ok, err = pcall(vim.api.nvim_buf_call, bufnr, function()
     vim.cmd("noautocmd update")
@@ -88,16 +71,6 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   desc = "Remember cursor position",
 })
 
--- Create parent directories as soon as a new nested file path is opened.
-vim.api.nvim_create_autocmd("BufNewFile", {
-  group = augroup,
-  pattern = "*",
-  callback = function(ev)
-    ensure_parent_dir(ev.buf)
-  end,
-  desc = "Auto-create parent directories for new files",
-})
-
 -- Close certain windows with q
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup,
@@ -122,18 +95,27 @@ vim.api.nvim_create_autocmd("FileType", {
   desc = "Enable wrap and spell for git commits and markdown",
 })
 
--- Auto-open neo-tree on the right so code pane stays at ~70% width.
-vim.api.nvim_create_autocmd("VimEnter", {
+vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", "FileType" }, {
   group = augroup,
-  callback = function()
-    -- Delay slightly so all plugins are loaded first
-    vim.defer_fn(function()
-      if vim.bo.buftype == "" then
-        vim.cmd("Neotree show position=right")
-      end
-    end, 50)
+  pattern = "*",
+  callback = function(ev)
+    local buf = ev.buf
+    if not vim.api.nvim_buf_is_valid(buf) then
+      return
+    end
+
+    if vim.bo[buf].buftype ~= "" then
+      return
+    end
+
+    if vim.bo[buf].filetype == "markdown" or vim.bo[buf].filetype == "gitcommit" then
+      return
+    end
+
+    vim.opt_local.wrap = false
+    vim.opt_local.linebreak = false
   end,
-  desc = "Auto-open neo-tree sidebar for 70/30 layout",
+  desc = "Disable wrapping in code and normal file buffers",
 })
 
 -- Auto-save when leaving a file buffer (without triggering formatters/fixers).
@@ -143,15 +125,6 @@ vim.api.nvim_create_autocmd("BufLeave", {
     autosave_buf(ev.buf)
   end,
   desc = "Auto-save on buffer leave",
-})
-
--- Create missing parent directories before writing a file.
-vim.api.nvim_create_autocmd("BufWritePre", {
-  group = augroup,
-  callback = function(ev)
-    ensure_parent_dir(ev.buf)
-  end,
-  desc = "Auto-create parent directories on save",
 })
 
 -- Keep only one listed file buffer around at a time.

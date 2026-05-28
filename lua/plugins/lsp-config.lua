@@ -48,11 +48,6 @@ return {
         capabilities = capabilities,
       })
 
-      -- Restrict emmet to markup/style files only (override nvim-lspconfig defaults)
-      vim.lsp.config('emmet_ls', {
-        filetypes = { 'html', 'css', 'scss', 'vue', 'svelte', 'astro' },
-      })
-
       -- Enable all servers (configs loaded from lsp/ folder)
       vim.lsp.enable({ 'lua_ls', 'eslint', 'tailwindcss', 'emmet_ls', 'jsonls', 'cssls', 'html' })
 
@@ -73,7 +68,9 @@ return {
 
       -- Diagnostic configuration with modern sign definitions
       vim.diagnostic.config({
-        virtual_text = false,
+        virtual_text = {
+          prefix = "●",
+        },
         signs = {
           text = {
             [vim.diagnostic.severity.ERROR] = " ",
