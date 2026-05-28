@@ -34,6 +34,17 @@ return {
         },
         view = "mini",
       },
+      {
+        filter = {
+          any = {
+            { find = "textDocument/diagnostic failed" },
+            { find = "Request textDocument/diagnostic" },
+            { find = "starting at object with constructor" },
+            { find = "%-32603" },
+          },
+        },
+        opts = { skip = true },
+      },
     },
   },
   dependencies = {
@@ -41,6 +52,7 @@ return {
     {
       "rcarriga/nvim-notify",
       opts = {
+        background_colour = "#000000",
         timeout = 3000,
         max_height = function()
           return math.floor(vim.o.lines * 0.75)
