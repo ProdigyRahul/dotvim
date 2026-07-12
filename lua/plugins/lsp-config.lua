@@ -51,8 +51,42 @@ return {
         capabilities = capabilities,
       })
 
+      local servers = { 'lua_ls', 'eslint', 'tailwindcss', 'emmet_ls', 'jsonls', 'cssls', 'html' }
+
+      -- nvim-lspconfig ships its own lsp/<server>.lua files, and they sit later in the
+      -- runtimepath than ours, so they win the merge. Servers like tailwindcss end up with
+      -- lspconfig's async root_dir *and* our root_markers. When that root_dir finds no
+      -- marker it calls on_dir(nil), which makes vim.lsp.start() re-resolve the root with
+      -- vim.fs.root(bufnr, root_markers) from inside a vim.schedule() -- one tick later,
+      -- when the buffer may already be wiped: "vim/fs:483: Invalid buffer id: N".
+      -- So resolve the root here, while the buffer is still valid, and never pass back nil.
+      for _, name in ipairs(servers) do
+        local resolved = vim.lsp.config[name] or {}
+        local root_dir = resolved.root_dir
+        if type(root_dir) == 'function' then
+          local markers = resolved.root_markers or {}
+          vim.lsp.config(name, {
+            root_dir = function(bufnr, on_dir)
+              if not vim.api.nvim_buf_is_valid(bufnr) then
+                return
+              end
+              root_dir(bufnr, function(dir)
+                -- The upstream callback may itself be deferred; re-check the buffer.
+                if not vim.api.nvim_buf_is_valid(bufnr) then
+                  return
+                end
+                dir = dir or vim.fs.root(bufnr, markers)
+                if dir then
+                  on_dir(dir)
+                end
+              end)
+            end,
+          })
+        end
+      end
+
       -- Enable all servers (configs loaded from lsp/ folder)
-      vim.lsp.enable({ 'lua_ls', 'eslint', 'tailwindcss', 'emmet_ls', 'jsonls', 'cssls', 'html' })
+      vim.lsp.enable(servers)
 
       local lsp_keymaps = vim.api.nvim_create_augroup("RahulLspKeymaps", { clear = true })
       vim.api.nvim_create_autocmd("LspAttach", {
