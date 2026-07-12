@@ -1,89 +1,60 @@
+-- blink.cmp (Rust fuzzy matcher) replaces nvim-cmp for lower insert-mode latency.
 return {
+  -- LuaSnip loads at InsertEnter only (blink's luasnip preset requires it lazily)
   {
-    "hrsh7th/nvim-cmp",
+    "L3MON4D3/LuaSnip",
+    version = "v2.*",
     event = "InsertEnter",
-    dependencies = {
-      "hrsh7th/cmp-buffer",
-      "hrsh7th/cmp-path",
-      "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/cmp-nvim-lua",
-      "saadparwaiz1/cmp_luasnip",
-      "L3MON4D3/LuaSnip",
-      "rafamadriz/friendly-snippets",
-      "onsails/lspkind.nvim",
-    },
+    dependencies = { "rafamadriz/friendly-snippets" },
     config = function()
-      local cmp = require("cmp")
-      local luasnip = require("luasnip")
-      local lspkind = require("lspkind")
-
       require("luasnip.loaders.from_vscode").lazy_load()
-
-      cmp.setup({
-        snippet = {
-          expand = function(args)
-            luasnip.lsp_expand(args.body)
-          end,
-        },
-        window = {
-          completion = cmp.config.window.bordered(),
-          documentation = cmp.config.window.bordered(),
-        },
-        mapping = cmp.mapping.preset.insert({
-          ["<C-k>"] = cmp.mapping.select_prev_item(),
-          ["<C-j>"] = cmp.mapping.select_next_item(),
-          ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-          ["<C-f>"] = cmp.mapping.scroll_docs(4),
-          ["<C-Space>"] = cmp.mapping.complete(),
-          ["<C-e>"] = cmp.mapping.abort(),
-          ["<CR>"] = cmp.mapping.confirm({ select = false }),
-          ["<Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item()
-            elseif luasnip.expand_or_jumpable() then
-              luasnip.expand_or_jump()
-            else
-              fallback()
-            end
-          end, { "i", "s" }),
-          ["<S-Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item()
-            elseif luasnip.jumpable(-1) then
-              luasnip.jump(-1)
-            else
-              fallback()
-            end
-          end, { "i", "s" }),
-        }),
-        sources = cmp.config.sources({
-          { name = "nvim_lsp" },
-          { name = "luasnip" },
-          { name = "nvim_lua" },
-        }, {
-          { name = "buffer" },
-          { name = "path" },
-        }),
-        formatting = {
-          format = lspkind.cmp_format({
-            mode = "symbol_text",
-            maxwidth = 50,
-            ellipsis_char = "...",
-            before = function(entry, vim_item)
-              return vim_item
-            end,
-          }),
-        },
-      })
-
-      -- Use buffer source for `/` and `?`
-      cmp.setup.cmdline({ "/", "?" }, {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = {
-          { name = "buffer" }
-        }
-      })
-
     end,
+  },
+  {
+    "saghen/blink.cmp",
+    version = "1.*", -- pulls the prebuilt Rust matcher binary
+    event = "InsertEnter",
+    opts = {
+      snippets = { preset = "luasnip" },
+      keymap = {
+        preset = "none",
+        ["<C-k>"] = { "select_prev", "fallback" },
+        ["<C-j>"] = { "select_next", "fallback" },
+        ["<C-b>"] = { "scroll_documentation_up", "fallback" },
+        ["<C-f>"] = { "scroll_documentation_down", "fallback" },
+        ["<C-Space>"] = { "show", "fallback" },
+        ["<C-e>"] = { "hide", "fallback" },
+        ["<CR>"] = { "accept", "fallback" },
+        ["<Tab>"] = { "select_next", "snippet_forward", "fallback" },
+        ["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
+      },
+      completion = {
+        list = {
+          selection = { preselect = false, auto_insert = true },
+        },
+        menu = {
+          border = "rounded",
+          draw = {
+            columns = {
+              { "kind_icon" },
+              { "label", "label_description", gap = 1 },
+              { "kind" },
+            },
+          },
+        },
+        documentation = {
+          auto_show = true,
+          auto_show_delay_ms = 200,
+          window = { border = "rounded" },
+        },
+      },
+      sources = {
+        default = { "lsp", "snippets", "path", "buffer" },
+      },
+      appearance = {
+        nerd_font_variant = "normal",
+      },
+      fuzzy = { implementation = "prefer_rust_with_warning" },
+    },
   },
 }

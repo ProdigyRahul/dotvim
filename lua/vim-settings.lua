@@ -4,7 +4,8 @@ vim.opt.relativenumber = true
 vim.opt.mouse = "a"
 vim.opt.showmode = false
 vim.opt.hidden = true  -- Allow buffer switching without prompts (needed for auto-save on switch)
-vim.opt.clipboard = "unnamedplus"
+-- No `clipboard=unnamedplus`: syncing every yank/delete through wl-copy costs ~50ms
+-- per operation. Use <leader>y / <leader>p to talk to the system clipboard.
 vim.opt.breakindent = true
 vim.opt.undofile = true
 vim.opt.swapfile = false
@@ -15,9 +16,9 @@ vim.opt.smartcase = true
 vim.opt.signcolumn = "yes"
 vim.opt.updatetime = 250
 vim.opt.timeoutlen = 300
--- Folding (Treesitter-based) so z* fold shortcuts work out of the box
-vim.opt.foldmethod = "expr"
-vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+-- Folding: foldmethod/foldexpr are set per-buffer by the treesitter FileType
+-- autocmd (lua/plugins/treesitter.lua). Setting the treesitter foldexpr
+-- globally blocked every buffer open ~70ms on synchronous query compilation.
 vim.opt.foldlevel = 99
 vim.opt.foldlevelstart = 99
 vim.opt.foldenable = true
@@ -42,7 +43,6 @@ vim.opt.smartindent = true
 
 -- Search
 vim.opt.incsearch = true
-vim.opt.hlsearch = true
 
 -- Colors
 vim.opt.termguicolors = true
@@ -112,6 +112,11 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Scroll up and center" })
 -- Keep search terms in middle of screen
 vim.keymap.set("n", "n", "nzzzv", { desc = "Next search result" })
 vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search result" })
+
+-- System clipboard (explicit; regular y/d/p stay instant register-only)
+vim.keymap.set({ "n", "v" }, "<leader>y", '"+y', { desc = "Yank to system clipboard" })
+vim.keymap.set("n", "<leader>Y", '"+Y', { desc = "Yank line to system clipboard" })
+vim.keymap.set({ "n", "v" }, "<leader>P", '"+p', { desc = "Paste from system clipboard" })
 
 -- Paste without yanking
 vim.keymap.set("x", "<leader>p", '"_dP', { desc = "Paste without yanking" })

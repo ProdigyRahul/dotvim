@@ -95,16 +95,12 @@ vim.api.nvim_create_autocmd("FileType", {
   desc = "Enable wrap and spell for git commits and markdown",
 })
 
-vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", "FileType" }, {
+vim.api.nvim_create_autocmd("FileType", {
   group = augroup,
   pattern = "*",
   callback = function(ev)
     local buf = ev.buf
-    if not vim.api.nvim_buf_is_valid(buf) then
-      return
-    end
-
-    if vim.bo[buf].buftype ~= "" then
+    if not vim.api.nvim_buf_is_valid(buf) or vim.bo[buf].buftype ~= "" then
       return
     end
 
@@ -141,17 +137,25 @@ vim.api.nvim_create_autocmd("BufEnter", {
       return
     end
 
+    -- Deferred so the buffer switch renders immediately; the (potentially
+    -- disk-writing) cleanup runs right after instead of blocking the redraw.
     cleaning = true
-    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-      if buf ~= current and is_normal_file_buf(buf) and vim.bo[buf].buflisted then
-        autosave_buf(buf)
-        if vim.api.nvim_buf_is_valid(buf) and not vim.bo[buf].modified then
-          pcall(vim.api.nvim_buf_delete, buf, { force = false })
+    vim.schedule(function()
+      if not vim.api.nvim_buf_is_valid(current) then
+        cleaning = false
+        return
+      end
+      for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        if buf ~= current and is_normal_file_buf(buf) and vim.bo[buf].buflisted then
+          autosave_buf(buf)
+          if vim.api.nvim_buf_is_valid(buf) and not vim.bo[buf].modified then
+            pcall(vim.api.nvim_buf_delete, buf, { force = false })
+          end
         end
       end
-    end
-    close_empty_windows(vim.api.nvim_get_current_win())
-    cleaning = false
+      close_empty_windows(vim.api.nvim_get_current_win())
+      cleaning = false
+    end)
   end,
   desc = "Single-buffer mode cleanup",
 })
